@@ -1,4 +1,4 @@
-package com.chryl.utils;
+package com.chryl.util;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created By Chr on 2019/7/27.
+ * Created by Chryl on 2019/7/26.
  */
 public class HttpClientUtil {
+
     public static String doGet(String url, Map<String, String> param) {
 
         // 创建Httpclient对象
@@ -141,6 +142,18 @@ public class HttpClientUtil {
         try {
             // 创建Http Post请求
             HttpPost httpPost = new HttpPost(url);
+            //setConnectTimeout：设置连接超时时间，单位毫秒。
+            //setConnectionRequestTimeout：设置从connect Manager获取Connection 超时时间，单位毫秒。
+            //这个属性是新加的属性，因为目前版本是可以共享连接池的。
+            //setSocketTimeout：请求获取数据的超时时间，单位毫秒。
+            //如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
+            RequestConfig defaultRequestConfig = RequestConfig.custom()
+                    .setConnectTimeout(5000)
+                    .setConnectionRequestTimeout(5000)
+                    .setSocketTimeout(8000)
+                    .setStaleConnectionCheckEnabled(true)//提交请求前检查连接是否可用
+                    .build();
+            httpPost.setConfig(defaultRequestConfig);
             // 创建请求内容
             StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
             httpPost.setEntity(entity);
