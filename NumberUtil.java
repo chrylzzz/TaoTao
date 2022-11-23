@@ -1,10 +1,8 @@
 package com.csg.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -214,13 +212,58 @@ public class NumberUtil {
         return queryText;
     }
 
-    public static boolean isNumeric(String str) {
-        for (int i = str.length(); --i >= 0; ) {
-            if (!Character.isDigit(str.charAt(i))) {
-                return false;
+    /**
+     * 将用户说的户号后6位和数字区分
+     *
+     * @param str
+     * @return
+     */
+    public static Map<String, String> isNumeric(String str) {
+        HashMap<String, String> resMap = new HashMap<>();
+//        String str = "love234csdn3423java";
+
+
+        for (int i = 0; i < str.length(); i++) {
+            final char c = str.charAt(i);
+            if (!Character.isDigit(c)) {//非数字
+
+            } else {//数字
+                String xm = str.substring(0, i);
+                String hh = str.substring(i);
+
+                resMap.put("xm", xm);
+                resMap.put("hh", hh);
+                break;
             }
         }
-        return true;
+        return resMap;
+
+    }
+
+    /**
+     * 提取数字
+     *
+     * @param str
+     * @return 户号
+     */
+    public static String getSz(String str) {
+        String regEx = "[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        String hh = m.replaceAll("").trim();
+        return hh;
+    }
+
+    /**
+     * 提取汉字
+     *
+     * @param str
+     * @return
+     */
+    public static String getHz(String str) {
+        String reg = "[^(\\u4e00-\\u9fa5)]";
+        str = str.replaceAll(reg, "");
+        return str;
     }
 
 
@@ -240,7 +283,8 @@ public class NumberUtil {
 
 
         System.out.println("-----------------");
-        String testTxt = "张文涛卡夏552095523";
+//        String testTxt = "张文涛卡夏552095523";
+        String testTxt = "张夏";
 //        final String[] split = testTxt.split(null);
         final char[] chars = testTxt.toCharArray();
         final String s00 = NumberUtil.convertNum2ChineseNum(testTxt);
@@ -248,6 +292,7 @@ public class NumberUtil {
         final String s11 = NumberUtil.convertChineseNum2Num(testTxt);
         System.out.println(s11);
 
+        System.out.println(NumberUtil.isNumeric(s11));
 
 
     }
