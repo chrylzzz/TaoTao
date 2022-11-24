@@ -345,4 +345,46 @@ public class DateUtil {
         }
         return monthDays;
     }
+    
+    
+    /**
+     * 校验日期格式
+     * yyyy-MM-dd 或者 yyyy-M-dd
+     **/
+
+    private static String DATE_REGEX = "^([1-9]\\d{3}-)(([0]{0,1}[1-9]-)|([1][0-2]-))(([0-3]{0,1}[0-9]))$";
+
+    /***
+     * @desc 校验日期的格式，yyyy-MM-dd，无法校验dd的完整性，
+
+     * 就是可能出现 2020-2-32，2020-1-33这样的天数，可以通过设置日期的严禁性来转成日期，若报错则日期不正确
+
+     * @author chryl
+
+     * @date 2020-05-28 18:50
+
+     * @param
+
+     * @param datestr：日期，格式：yyyy-MM-dd
+
+     * @return boolean
+
+     */
+    public static boolean validDateEffecitive(String datestr) throws Exception {
+        boolean matches = Pattern.matches(DATE_REGEX, datestr);
+        if (!matches) {
+            return matches;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //设置日期格式转的严谨性
+        sdf.setLenient(false);
+        try {
+            sdf.parse(datestr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return matches;
+    }
+
 }
